@@ -16,6 +16,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+      
+      iron-image {
+        width: 32px;
+        height: 32px;
+        background: #939ed5;
+      }
+      
+      paper-icon-button#twitter-btn:hover {
+        color: #64FFDA;
+      }
     </style>
     <paper-header-panel class="flex" shadow="true">
       <paper-toolbar>
@@ -24,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <template is="dom-if" if="{{user}}">
           <paper-icon-button icon="account-circle" on-tap="signOut"></paper-icon-button>
         </template>
-        <paper-icon-button on-tap="refresh" icon="refresh"></paper-icon-button>
+        <paper-icon-button id="twitter-btn" on-tap="refresh" src="../../images/TwitterLogo_white.png"></paper-icon-button>
       </paper-toolbar>
     </paper-header-panel>
   </template>
