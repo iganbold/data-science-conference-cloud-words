@@ -1,4 +1,4 @@
-# Data Science UNCC 2016
+# UNCC Data Science 2016
 
 ## Demo
 https://data-uncc-2016.firebaseapp.com/
