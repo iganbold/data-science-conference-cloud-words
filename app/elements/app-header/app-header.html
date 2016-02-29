@@ -33,8 +33,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div>{{user.twitter.displayName}}</div>
         <template is="dom-if" if="{{user}}">
           <paper-icon-button icon="account-circle" on-tap="signOut"></paper-icon-button>
+          <paper-icon-button id="twitter-btn" on-tap="refresh" src="../../images/TwitterLogo_white.png"></paper-icon-button>
         </template>
-        <paper-icon-button id="twitter-btn" on-tap="refresh" src="../../images/TwitterLogo_white.png"></paper-icon-button>
+        
       </paper-toolbar>
     </paper-header-panel>
   </template>
