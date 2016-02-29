@@ -23,6 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     
     <template is="dom-if" if="{{user}}">
       <iron-ajax
+        id = "ajaxTwitterHome"
         url="https://data-uncc-backend-2016.herokuapp.com/api/twitter1.1/home-timeline.json/{{user.twitter.accessToken}}/{{user.twitter.accessTokenSecret}}"
         last-response="{{tweets}}" auto>
       </iron-ajax>

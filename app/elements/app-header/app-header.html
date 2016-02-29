@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <template is="dom-if" if="{{user}}">
           <paper-icon-button icon="account-circle" on-tap="signOut"></paper-icon-button>
         </template>
+        <paper-icon-button on-tap="refresh" icon="refresh"></paper-icon-button>
       </paper-toolbar>
     </paper-header-panel>
   </template>
@@ -42,6 +43,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       signOut(){
         document.getElementById('authenticate').logout();
+      },
+      
+      refresh() {
+          document.getElementById('ajaxTwitterHome').generateRequest();
       }
     });
   })();
