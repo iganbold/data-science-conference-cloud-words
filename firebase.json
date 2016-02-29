@@ -1,0 +1,9 @@
+{
+  "firebase": "data-uncc-2016",
+  "public": "dist",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

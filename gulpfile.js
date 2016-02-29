@@ -217,7 +217,7 @@ gulp.task('clean', function() {
 // Watch files for changes & reload
 gulp.task('serve', ['styles', 'elements'], function() {
   browserSync({
-    port: 8080,
+    port: process.env.PORT,
     notify: false,
     logPrefix: 'PSK',
     snippetOptions: {

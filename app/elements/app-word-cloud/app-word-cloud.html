@@ -1,0 +1,143 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="cloud-word-js.html">
+
+<dom-module id="app-word-cloud">
+  <template>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Finger+Paint">
+    <style>
+      :host {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      #container {
+        overflow-x: auto;
+        overflow-y: visible;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .canvas {
+        display: block;
+        position: relative;
+        overflow: hidden;
+      }
+    
+      .canvas.hide {
+        display: none;
+      }
+    
+      /*#html-canvas > span {*/
+      /*  transition: text-shadow 1s ease, opacity 1s ease;*/
+      /*  -webkit-transition: text-shadow 1s ease, opacity 1s ease;*/
+      /*  -ms-transition: text-shadow 1s ease, opacity 1s ease;*/
+      /*}*/
+    
+      /*#html-canvas > span:hover {*/
+      /*  text-shadow: 0 0 10px, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;*/
+      /*  opacity: 0.5;*/
+      /*}*/
+      
+      paper-material {
+        background-color: #B3E5FC;
+        height: 80%;
+        width: 90%;
+        
+      }
+      
+      paper-spinner {
+        z-index: 4;
+      }
+      
+    </style>
+    
+    <paper-material id="canvas">
+      
+      <div id="container">
+        <paper-spinner alt="Loading canvas list" active></paper-spinner>
+        <!--<canvas id="canvas" class="canvas"></canvas>-->
+        <!--<div id="html-canvas" class="canvas hide"></div>-->
+      </div>
+    </paper-material>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'app-word-cloud',
+
+      properties: {
+        foo: {
+          type: String,
+          value: 'app-word-cloud',
+          notify: true
+        },
+        list: {
+          notify: true,
+          observer: "_obList"
+        }
+      },
+      
+      _obList(data) {
+        // console.log(this.$.container.style.width);
+        var options1 = {
+          gridSize: 18,
+          weightFactor: 6,
+          fontFamily: 'Times, serif',
+          color(word, weight) {
+            return (weight >= 12) ? '#FFA000' : '#727272';
+          },
+          rotateRatio: 0.5,
+          backgroundColor: '#B3E5FC',
+          list: data,
+          shape: 'circle'
+        }; 
+         var options2 = {
+            gridSize: 18,
+            weightFactor: 3,
+            fontFamily: 'Average, Times, serif',
+            color: function() {
+              return (['#d0d0d0', '#e11', '#44f'])[Math.floor(Math.random() * 3)]
+            },
+            backgroundColor: '#333',
+            list: data
+          };
+          
+          var options3 = {
+            gridSize: 18,
+            weightFactor: 3,
+            fontFamily: 'Finger Paint, cursive, sans-serif',
+            color: '#f0f0c0',
+            hover: window.drawBox,
+            click: function(item) {
+              alert(item[0] + ': ' + item[1]);
+            },
+            backgroundColor: '#001f00',
+            list: data,
+            shape: 'star'
+          }
+        
+        WordCloud(this.$.container,options1);
+      }
+    });
+  })();
+  </script>
+</dom-module>
