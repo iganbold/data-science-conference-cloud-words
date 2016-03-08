@@ -9,6 +9,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../twitter-search/twitter-search.html">
 
 <dom-module id="app-header">
   <template>
@@ -23,20 +26,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background: #939ed5;
       }
       
-      paper-icon-button#twitter-btn:hover {
-        color: #64FFDA;
+      paper-toggle-button {
+        --paper-toggle-button-checked-bar-color:  white;
+        --paper-toggle-button-checked-button-color:  white;
       }
+      
     </style>
     <paper-header-panel class="flex" shadow="true">
       <paper-toolbar>
-        <span class="title">UNCC data science 2016</span>
-        <div>{{user.twitter.displayName}}</div>
+        <paper-icon-button on-tap="openSearch" icon="search"></paper-icon-button>
+        <span class="title">UNCC Data Science 2016</span>
         <template is="dom-if" if="{{user}}">
+          <div>{{user.twitter.displayName}}</div>
           <paper-icon-button icon="account-circle" on-tap="signOut"></paper-icon-button>
-          <paper-icon-button id="twitter-btn" on-tap="refresh" src="../../images/TwitterLogo_white.png"></paper-icon-button>
+          <paper-icon-button id="twitter-btn" on-tap="getTweets" src="../../images/TwitterLogo_white.png"></paper-icon-button>
+          <paper-toggle-button id="syncBtn" on-change="sync"></paper-toggle-button>
         </template>
         
       </paper-toolbar>
+      
+      <twitter-search id="twitter_search" user="{{user}}" mentions="{{mentions}}"></twitter-search>
     </paper-header-panel>
   </template>
   <script>
@@ -49,16 +58,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         user: {
           notify: true
-        }
+        },
+        
+        mentions: {
+          notify: true
+        },
+        
+        intervalId: String
       },
       
-      signOut(){
+      signOut() {
+        if(this.intervalId)
+        {
+              clearInterval(this.intervalId);
+        }
+        
+        document.getElementById('syncBtn').checked = false;
+        
         document.getElementById('authenticate').logout();
       },
       
-      refresh() {
+      getTweets() {
           document.getElementById('ajaxTwitterHome').generateRequest();
+      },
+      
+      openSearch() {
+          this.$.twitter_search.openSearch();
+      },
+      
+      sync() {
+        var syncBtn = document.getElementById('syncBtn');
+        if(syncBtn.checked)
+        {
+            this.intervalId = setInterval(()=>{this.$.twitter_search.sync();}, 30000);
+            document.getElementById('toast').text = "Tweets will be synced every 30 seconds."
+            document.getElementById('toast').open();
+        } else {
+            if(this.intervalId)
+              clearInterval(this.intervalId);
+        }
+        
+        console.log(syncBtn.checked);
       }
+      
     });
   })();
   </script>

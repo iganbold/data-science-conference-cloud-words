@@ -98,12 +98,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'app-word-cloud',
 
       properties: {
-        foo: {
-          type: String,
-          value: 'app-word-cloud',
-          notify: true
-        },
+        
         list: {
+          notify: true,
+          observer: "_obList"
+        },
+        
+        mentions: {
           notify: true,
           observer: "_obList"
         }
@@ -114,10 +115,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         {
           var options1 = {
             gridSize: 18,
-            weightFactor: 6,
+            weightFactor: 10,
             fontFamily: 'Times, serif',
             color(word, weight) {
-              return (weight >= 12) ? '#FFA000' : '#727272';
+              return (weight >= 9) ? '#FFA000' : '#727272';
             },
             hover: function drawBox(item, dimension) {
               

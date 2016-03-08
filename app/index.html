@@ -64,9 +64,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
     <app-auth user="{{user}}" location="https://data-uncc-2016.firebaseio.com/"></app-auth>
-    <app-header user="{{user}}"></app-header>
+    <app-header user="{{user}}" mentions="{{mentions}}"></app-header>
     <twitter-timeline user="{{user}}" list="{{list}}"></twitter-timeline>
-    <app-word-cloud list="{{list}}"></app-word-cloud>
+    <app-word-cloud list="{{list}}" mentions="{{mentions}}"></app-word-cloud>
     
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>

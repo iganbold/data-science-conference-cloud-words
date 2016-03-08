@@ -1,0 +1,125 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<dom-module id="twitter-search">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+     <paper-dialog id="search_dialog" 
+                    modal
+                    entry-animation="scale-up-animation"
+                    exit-animation="fade-out-animation">
+          
+        <h2 style="color: #2196F3">#UNCCDataScience2016</h2>  
+        <div>
+          <paper-input id="search_box" label="Search Tweets" value="{{searchValue}}">
+            <paper-icon-button icon="search" on-tap="search" suffix></paper-icon-button>
+          </paper-input>
+        </div>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      
+      <iron-ajax
+        id = "ajaxTwitterSearch"
+        url="https://data-uncc-backend-2016.herokuapp.com/api/twitter1.1/search.json/{{searchValue}}/{{user.twitter.accessToken}}/{{user.twitter.accessTokenSecret}}"
+        last-response="{{result}}">
+      </iron-ajax>
+      
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'twitter-search',
+
+      properties: {
+        user: {
+          notify: true
+        },
+        
+        mentions: {
+          notify: true
+        },
+        
+        result: {
+          notify: true,
+          observer: "_countWords"
+        },
+        
+        searchValue: {
+          type: String,
+          value: "uncc"
+        }
+      },
+      
+      openSearch() {
+          this.$.search_dialog.opened = true;
+      },
+      
+      search() {
+        this.$.ajaxTwitterSearch.generateRequest();
+        this.$.search_dialog.opened = false;
+      },
+      
+      sync() {
+        this.$.ajaxTwitterSearch.generateRequest();
+      },
+      
+      obMentions(mentions) {
+        this._countWords(mentions);
+      },
+      
+      _countWords(result) {
+          this.$.search_box.searchValue = "";
+          if(result) {
+            var wordsMap =new Map();
+            var stopWords = ["&amp;", "rt","a", "about", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already", "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway", "anywhere", "are", "around", "as",  "at", "back","be","became", "because","become","becomes", "becoming", "been", "before", "beforehand", "behind", "being", "below", "beside", "besides", "between", "beyond", "bill", "both", "bottom","but", "by", "call", "can", "cannot", "cant", "co", "con", "could", "couldnt", "cry", "de", "describe", "detail", "do", "done", "down", "due", "during", "each", "eg", "eight", "either", "eleven","else", "elsewhere", "empty", "enough", "etc", "even", "ever", "every", "everyone", "everything", "everywhere", "except", "few", "fifteen", "fify", "fill", "find", "fire", "first", "five", "for", "former", "formerly", "forty", "found", "four", "from", "front", "full", "further", "get", "give", "go", "had", "has", "hasnt", "have", "he", "hence", "her", "here", "hereafter", "hereby", "herein", "hereupon", "hers", "herself", "him", "himself", "his", "how", "however", "hundred", "ie", "if", "in", "inc", "indeed", "interest", "into", "is", "it", "its", "itself", "keep", "last", "latter", "latterly", "least", "less", "ltd", "made", "many", "may", "me", "meanwhile", "might", "mill", "mine", "more", "moreover", "most", "mostly", "move", "much", "must", "my", "myself", "name", "namely", "neither", "never", "nevertheless", "next", "nine", "no", "nobody", "none", "noone", "nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one", "only", "onto", "or", "other", "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own","part", "per", "perhaps", "please", "put", "rather", "re", "same", "see", "seem", "seemed", "seeming", "seems", "serious", "several", "she", "should", "show", "side", "since", "sincere", "six", "sixty", "so", "some", "somehow", "someone", "something", "sometime", "sometimes", "somewhere", "still", "such", "system", "take", "ten", "than", "that", "the", "their", "them", "themselves", "then", "thence", "there", "thereafter", "thereby", "therefore", "therein", "thereupon", "these", "they", "thickv", "thin", "third", "this", "those", "though", "three", "through", "throughout", "thru", "thus", "to", "together", "too", "top", "toward", "towards", "twelve", "twenty", "two", "un", "under", "until", "up", "upon", "us", "very", "via", "was", "we", "well", "were", "what", "whatever", "when", "whence", "whenever", "where", "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose", "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the"];
+            var setStopWords = new Set(stopWords);
+            
+            result.statuses.forEach((tweet)=> {
+              var tweetArray = tweet.text.toLowerCase().split(" ");
+              
+              for(var i=0 ; i < tweetArray.length; i++) {
+                if(!setStopWords.has(tweetArray[i]) && tweetArray[i].indexOf("http") < 0)
+                {
+                  if(wordsMap.has(tweetArray[i]))
+                  {
+                    wordsMap.set(tweetArray[i],(wordsMap.get(tweetArray[i])+1));
+                  } else {
+                    wordsMap.set(tweetArray[i],1);
+                  }  
+                }
+              }  
+            });
+            
+            var wordList = [];
+            wordsMap.forEach((value, key, mapObj) => {
+                wordList.push([key,value]);
+            });
+            
+            this.mentions = wordList;
+          }
+      }
+      
+    });
+  })();
+  </script>
+</dom-module>
