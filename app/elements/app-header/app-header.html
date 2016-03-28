@@ -32,21 +32,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       
     </style>
-    <paper-header-panel class="flex" shadow="true">
       <paper-toolbar>
+        
+        <span class="title">UNCC Data Science Initiative 2016</span>
+        
+        <!--<template is="dom-if" if="{{user}}">-->
+        <!--  <div>{{user.twitter.displayName}}</div>-->
+        <!--</template>-->
         <paper-icon-button on-tap="openSearch" icon="search"></paper-icon-button>
-        <span class="title">UNCC Data Science 2016</span>
-        <template is="dom-if" if="{{user}}">
-          <div>{{user.twitter.displayName}}</div>
-          <paper-icon-button icon="account-circle" on-tap="signOut"></paper-icon-button>
-          <paper-icon-button id="twitter-btn" on-tap="getTweets" src="../../images/TwitterLogo_white.png"></paper-icon-button>
-          <paper-toggle-button id="syncBtn" on-change="sync"></paper-toggle-button>
-        </template>
+        <paper-icon-button icon="more-vert" on-tap="openDrawer"></paper-icon-button>
         
       </paper-toolbar>
       
       <twitter-search id="twitter_search" user="{{user}}" mentions="{{mentions}}"></twitter-search>
-    </paper-header-panel>
   </template>
   <script>
   (function() {
@@ -62,43 +60,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         
         mentions: {
           notify: true
-        },
-        
-        intervalId: String
-      },
-      
-      signOut() {
-        if(this.intervalId)
-        {
-              clearInterval(this.intervalId);
         }
-        
-        document.getElementById('syncBtn').checked = false;
-        
-        document.getElementById('authenticate').logout();
-      },
-      
-      getTweets() {
-          document.getElementById('ajaxTwitterHome').generateRequest();
       },
       
       openSearch() {
-          this.$.twitter_search.openSearch();
+        // document.getElementById('twitter_search').openSearch();
+        this.$.twitter_search.openSearch();
       },
       
-      sync() {
-        var syncBtn = document.getElementById('syncBtn');
-        if(syncBtn.checked)
-        {
-            this.intervalId = setInterval(()=>{this.$.twitter_search.sync();}, 30000);
-            document.getElementById('toast').text = "Tweets will be synced every 30 seconds."
-            document.getElementById('toast').open();
-        } else {
-            if(this.intervalId)
-              clearInterval(this.intervalId);
-        }
-        
-        console.log(syncBtn.checked);
+      openDrawer() {
+        document.getElementById('paperDrawerPanel').openDrawer();
       }
       
     });

@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <h2 style="color: #2196F3">#UNCCDataScience2016</h2>  
         <div>
           <paper-input id="search_box" label="Search Tweets" value="{{searchValue}}">
-            <paper-icon-button icon="search" on-tap="search" suffix></paper-icon-button>
+            <paper-icon-button icon="search" on-tap="search" suffix ></paper-icon-button>
           </paper-input>
         </div>
         <div class="buttons">
@@ -36,10 +36,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </paper-dialog>
       
+      <template is="dom-if" if="{{user}}">
+        <iron-ajax
+          id = "ajaxTwitterDefaultRequest"
+          url="https://data-uncc-backend-2016.herokuapp.com/api/twitter1.1/search.json/{{defaultSearch}}/{{user.twitter.accessToken}}/{{user.twitter.accessTokenSecret}}"
+          last-response="{{result}}" auto>
+        </iron-ajax>
+      </template>
+      
       <iron-ajax
-        id = "ajaxTwitterSearch"
-        url="https://data-uncc-backend-2016.herokuapp.com/api/twitter1.1/search.json/{{searchValue}}/{{user.twitter.accessToken}}/{{user.twitter.accessTokenSecret}}"
-        last-response="{{result}}">
+          id = "ajaxTwitterSearch"
+          url="https://data-uncc-backend-2016.herokuapp.com/api/twitter1.1/search.json/{{searchRequestValue}}/{{user.twitter.accessToken}}/{{user.twitter.accessTokenSecret}}"
+          last-response="{{result}}">
       </iron-ajax>
       
   </template>
@@ -64,9 +72,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: "_countWords"
         },
         
+        searchRequestValue: {
+          type: String,
+          value: 'AnalyticsFrontiers',
+        },
+        
         searchValue: {
           type: String,
-          value: "uncc"
+          value: 'AnalyticsFrontiers',
+          notify: true
+        },
+        defaultSearch: {
+          type: String,
+          value: '%23AnalyticsFrontiers',
+          notify: true
         }
       },
       
@@ -75,6 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       
       search() {
+        this.replaceHashTag();
         this.$.ajaxTwitterSearch.generateRequest();
         this.$.search_dialog.opened = false;
       },
@@ -83,11 +103,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.ajaxTwitterSearch.generateRequest();
       },
       
-      obMentions(mentions) {
-        this._countWords(mentions);
+      replaceHashTag() {
+        this.searchRequestValue = this.searchValue.replace("#","%23");
       },
       
       _countWords(result) {
+
           this.$.search_box.searchValue = "";
           if(result) {
             var wordsMap =new Map();
@@ -98,7 +119,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var tweetArray = tweet.text.toLowerCase().split(" ");
               
               for(var i=0 ; i < tweetArray.length; i++) {
-                if(!setStopWords.has(tweetArray[i]) && tweetArray[i].indexOf("http") < 0)
+                if(!setStopWords.has(tweetArray[i]) && tweetArray[i].indexOf("http") < 0 && tweetArray[i].length > 2)
                 {
                   if(wordsMap.has(tweetArray[i]))
                   {
@@ -107,7 +128,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     wordsMap.set(tweetArray[i],1);
                   }  
                 }
-              }  
+              } 
+              
             });
             
             var wordList = [];
@@ -115,7 +137,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 wordList.push([key,value]);
             });
             
-            this.mentions = wordList;
+            if(document.getElementById("notIncludeOneBtn").checked) {
+              let flattened = [];
+              for(let x of wordList) {
+                if(x[1] > 1)
+                {
+                  flattened.push(x);
+                }
+              }
+              this.mentions = flattened;
+            } else {
+              this.mentions = wordList;
+            }
+            
           }
       }
       

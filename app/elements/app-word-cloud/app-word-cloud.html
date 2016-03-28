@@ -54,11 +54,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         opacity: 0.5;
       }
       
-      paper-material {
+      #container {
         background-color: #A7FFEB;
-        height: 80%;
-        width: 90%;
-        
       }
       
       span {
@@ -78,16 +75,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         z-index: 4;
       }
       
+      #loading {
+        padding-bottom: 20px;
+      }
+      
     </style>
     
-    <paper-material id="canvas">
-      
       <div id="container">
-        <paper-spinner alt="Loading canvas list" active></paper-spinner>
-        <!--<canvas id="canvas" class="canvas"></canvas>-->
-        <!--<div id="html-canvas" class="canvas hide"></div>-->
+        <paper-spinner id="loading" alt="Loading canvas list" active></paper-spinner>
       </div>
-    </paper-material>
 
   </template>
   <script>
@@ -113,6 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _obList(data) {
         if(WordCloud.isSupported)
         {
+          
           var options1 = {
             gridSize: 18,
             weightFactor: 10,

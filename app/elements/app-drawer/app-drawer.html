@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../twitter-search/twitter-search.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+<dom-module id="app-drawer">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    
+    <!--Drawer Toolbar -->
+    <paper-toolbar id="drawerToolbar">
+      <span class="menu-name">Settings</span>
+    </paper-toolbar>
+    
+    <!-- Drawer Content -->
+    <paper-menu>
+      <paper-item raised>
+        <paper-icon-button id="twitter-btn" on-tap="getTweets" src="../../images/TwitterLogo_blue.png"></paper-icon-button>Home Timeline
+      </paper-item>
+      <paper-item raised>
+        <paper-toggle-button id="syncBtn" on-change="sync"></paper-toggle-button>Sync
+      </paper-item>
+      <paper-item raised>
+        <paper-toggle-button id="notIncludeOneBtn"></paper-toggle-button>Not include 1 counted
+      </paper-item>
+      <paper-item on-tap="signOut" raised>
+        <paper-icon-button icon="account-circle" style="color: #55acee;" on-tap="signOut"></paper-icon-button>Logout
+      </paper-item>
+    </paper-menu>
+    
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'app-drawer',
+
+      properties: {
+        
+        user: {
+          notify: true
+        },
+        
+        intervalId: String
+      },
+      
+      getTweets() {
+          document.getElementById('ajaxTwitterHome').generateRequest();
+      },
+      
+      sync() {
+        var syncBtn = document.getElementById('syncBtn');
+        if(syncBtn.checked)
+        {
+            this.intervalId = setInterval(()=>{ document.getElementById("twitter_search").sync();}, 30000);
+            document.getElementById('toast').text = "Tweets will be synced every 30 seconds.";
+            document.getElementById('toast').open();
+        } else {
+            if(this.intervalId)
+              clearInterval(this.intervalId);
+              
+              document.getElementById('toast').text = "The sync mode is off.";
+              document.getElementById('toast').open();
+        }
+
+      },
+      
+      signOut() {
+        if(this.intervalId)
+        {
+              clearInterval(this.intervalId);
+        }
+        
+        document.getElementById('syncBtn').checked = false;
+        document.getElementById('authenticate').logout();
+        document.getElementById('paperDrawerPanel').closeDrawer();
+      }
+      
+    });
+  })();
+  </script>
+</dom-module>

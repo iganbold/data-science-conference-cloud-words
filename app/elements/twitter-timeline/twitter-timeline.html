@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-ajax
         id = "ajaxTwitterHome"
         url="https://data-uncc-backend-2016.herokuapp.com/api/twitter1.1/home-timeline.json/{{user.twitter.accessToken}}/{{user.twitter.accessTokenSecret}}"
-        last-response="{{tweets}}" auto>
+        last-response="{{tweets}}">
       </iron-ajax>
     </template>
   </template>
@@ -52,6 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       
       _countWords(tweets) {
+  
           
           
           if(tweets) {
@@ -62,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var tweetArray = tweet.text.toLowerCase().split(" ");
             
               for(var i=0 ; i < tweetArray.length; i++) {
-                if(!setStopWords.has(tweetArray[i]) && tweetArray[i].indexOf("http") < 0)
+                if(!setStopWords.has(tweetArray[i]) && tweetArray[i].indexOf("http") < 0 && tweetArray[i].length > 2)
                 {
                   if(wordsMap.has(tweetArray[i]))
                   {
@@ -79,7 +80,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 wordList.push([key,value]);
             });
             
-            this.list = wordList;
+            if(document.getElementById("notIncludeOneBtn").checked) {
+              let flattened = [];
+              for(let x of wordList) {
+                if(x[1] > 1)
+                {
+                  flattened.push(x);
+                }
+              }
+              this.list = flattened;
+            } else {
+              this.list = wordList;
+            }
+
           }
       }
       
