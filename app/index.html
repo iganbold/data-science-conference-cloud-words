@@ -75,13 +75,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
          <!--Main Toolbar -->
-        <app-header user="{{user}}" mentions="{{mentions}}"></app-header>
+        <app-header user="{{user}}" id="appHeader" style="height:10%" mentions="{{mentions}}"></app-header>
 
          <!--Main Content -->
-        <div class="content" id="mainContent" style="height: 100%">
+        <div class="content" id="appMainContext" style="height:90%">
           <app-auth user="{{user}}" location="https://data-uncc-2016.firebaseio.com/"></app-auth>
           <twitter-timeline user="{{user}}" list="{{list}}"></twitter-timeline>
-          <app-word-cloud list="{{list}}" mentions="{{mentions}}"></app-word-cloud>
+          <app-word-cloud list="{{list}}" mentions="{{mentions}}" ></app-word-cloud>
         </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>
@@ -94,6 +94,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <!-- build:js scripts/app.js -->
   <script src="scripts/app.js"></script>
+  // <script>
+  //     window.onload = function(e){ 
+  //         document.getElementById("appMainContext").style.height = "100%";
+  //     }
+  // </script>
   <!-- endbuild-->
 </body>
 
